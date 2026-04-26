@@ -5,6 +5,7 @@ To ensure clear ownership and parallel progress, this project is divided among f
 ---
 
 ## 👤 Harshit Ekka: Data Engineer (Data Collection & Management)
+**Assigned Branch:** `feature/data-collection`
 **Main Responsibility:** Build and manage the dataset
 
 **Tasks:**
@@ -21,6 +22,7 @@ To ensure clear ownership and parallel progress, this project is divided among f
 ---
 
 ## 👤 Abhijeet Singh: NLP Preprocessing & Feature Engineering
+**Assigned Branch:** `feature/preprocessing`
 **Main Responsibility:** Prepare text for modeling
 
 **Tasks:**
@@ -42,6 +44,7 @@ To ensure clear ownership and parallel progress, this project is divided among f
 ---
 
 ## 👤 Shajid & Umang: Model Developers & Evaluators (ML/NLP Model & Evaluation)
+**Assigned Branches:** `feature/modeling` (for model training) and `feature/evaluation` (for metrics and demo)
 **Main Responsibility:** Build, train, evaluate the classifier, and extract insights.
 
 **Tasks:**
