@@ -47,7 +47,3 @@ The model fell victim to **Spurious Correlation**. In the training data, words l
 
 This failure analysis is a crucial component of the evaluation phase. It proves that while BERT is highly capable, a model is only as good as the diversity of its training data.
 
-### Recommended Actions for the Team:
-1. **Shajid & Umang (Evaluation)**: Include this document in the final project report. It demonstrates a deep understanding of Machine Learning failure modes (overfitting to heuristics and spurious correlations). 
-2. **Harshit Ekka (Data Collection)**: To resolve this issue, the raw dataset must be augmented. Harshit should source datasets containing sophisticated corporate spear-phishing (to fix False Negatives) and legitimate automated system alerts (to fix False Positives).
-3. **Abhijeet Singh (Preprocessing)**: Ensure that URLs and domains are properly extracted or masked during preprocessing so the model learns to identify malicious URL structures rather than relying solely on the surrounding text.
