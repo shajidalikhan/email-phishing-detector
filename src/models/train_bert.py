@@ -2,6 +2,7 @@ import os
 import argparse
 import pandas as pd
 import torch
+import shutil
 from sklearn.model_selection import train_test_split
 from transformers import BertTokenizer, BertForSequenceClassification
 from transformers import Trainer, TrainingArguments
@@ -124,7 +125,12 @@ def main(args):
     os.makedirs(model_save_path, exist_ok=True)
     model.save_pretrained(model_save_path)
     tokenizer.save_pretrained(model_save_path)
-    print("Done!")
+    
+    # Compress the model directory into a zip file for easy downloading from Colab
+    zip_path = os.path.join(project_root, 'models', 'bert_model_export')
+    print(f"Compressing the model into {zip_path}.zip for easy download...")
+    shutil.make_archive(zip_path, 'zip', model_save_path)
+    print("Done! You can now download the bert_model_export.zip file.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train a BERT model on the phishing dataset.")
