@@ -1,9 +1,62 @@
-venv/
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-.env
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+.env/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific Data (Crucial for ML/NLP to avoid pushing large files)
+# We ignore the contents but can keep the folders if a .gitkeep is used
 data/raw/*
 data/processed/*
+data/external/*
+!data/**/.gitkeep
+*.csv
+*.tsv
+*.xlsx
+*.pdf
+*.json
+*.jsonl
+
+# Project specific Models and Checkpoints
 models/*.pkl
 models/*.h5
-logs/*
+models/*.pt
+models/*.pth
+models/*.keras
+*.safetensors
+checkpoints/
+
+# Logs and Databases
+logs/
+*.log
+*.sqlite
+*.sqlite3
+
+# Secrets and Configurations
+.env
+.env.local
+.env.secret
