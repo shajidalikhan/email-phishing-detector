@@ -1,5 +1,7 @@
 # 🎣 Phishing Email Detection Framework
+
 ## Person 1 — Data Engineer
+
 **Author:** Harshit Ekka
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
@@ -24,14 +26,14 @@ As **Person 1 (Data Engineer)**, my core responsibility was to **collect, crawl,
 
 As the Data Engineer of this project, I was responsible for building the foundation of the entire pipeline — the dataset. Without clean, labeled, and well-structured data, the NLP model cannot be trained or evaluated properly.
 
-| Task | Description |
-|------|-------------|
-| **Data Collection** | Collected phishing and legitimate email data from multiple real-world platforms |
-| **API Integration** | Integrated OpenPhish and PhishStats REST APIs for live phishing data |
-| **Web Crawling** | Built a custom crash-safe web crawler to collect large scale phishing data |
-| **Data Labeling** | Labeled all records properly — Phishing = 1, Legitimate = 0 |
-| **Data Cleaning** | Removed nulls, duplicates, empty records, and inconsistent entries |
-| **Dataset Preparation** | Saved final structured dataset as CSV for Person 2 (NLP Preprocessing) |
+| Task                    | Description                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------- |
+| **Data Collection**     | Collected phishing and legitimate email data from multiple real-world platforms |
+| **API Integration**     | Integrated OpenPhish and PhishStats REST APIs for live phishing data            |
+| **Web Crawling**        | Built a custom crash-safe web crawler to collect large scale phishing data      |
+| **Data Labeling**       | Labeled all records properly — Phishing = 1, Legitimate = 0                     |
+| **Data Cleaning**       | Removed nulls, duplicates, empty records, and inconsistent entries              |
+| **Dataset Preparation** | Saved final structured dataset as CSV for Person 2 (NLP Preprocessing)          |
 
 ---
 
@@ -48,9 +50,11 @@ Three data sources were successfully used to build the final dataset:
 OpenPhish is a fully automated phishing intelligence platform that continuously crawls the internet and identifies phishing URLs in real time. It maintains a live feed of currently active phishing URLs that is freely accessible without requiring any API key or registration.
 
 **How It Works:**
+
 > A simple HTTP GET request to the OpenPhish feed URL returns a plain text list of live phishing URLs — all verified and currently active at the time of collection. Each URL in the feed represents a real phishing threat that is active on the internet right now.
 
 **Why It Is Useful:**
+
 - No API key or registration required
 - Returns **real-time** phishing URLs that are currently active
 - Each URL represents a verified live phishing threat
@@ -87,9 +91,11 @@ Source  : openphish
 PhishStats is a platform dedicated to fighting phishing and cybercrime since 2014. It gathers, enhances, and shares phishing intelligence with the cybersecurity community. It provides a REST API for accessing a large database of phishing records with detailed metadata including URL, IP address, country, score, and more.
 
 **How It Works:**
+
 > The PhishStats REST API (`https://api.phishstats.info/api/phishing`) was discovered through their official API documentation. The API supports filtering, sorting, and pagination. Since the API has a maximum limit of **100 records per request** and we needed 19,000 records, a custom web crawler was built to automatically paginate through 190 pages.
 
 **API Details:**
+
 - Base URL: `https://api.phishstats.info/api/phishing`
 - Max records per request: 100
 - Rate limit: 20 requests per minute
@@ -108,6 +114,7 @@ for page in range(1, 191):
 ```
 
 **Sample API Response:**
+
 ```json
 {
   "url": "https://login.zh-mobi-aiyouxisports.com/",
@@ -135,6 +142,7 @@ Source  : phishstats_crawler
 The Enron Email Dataset is one of the most widely used datasets in email research and NLP. It was collected during the investigation of the Enron Corporation scandal and contains over 500,000 real emails from approximately 150 Enron employees, mostly senior management. It is considered the gold standard for legitimate email data in cybersecurity research.
 
 **Why Enron:**
+
 - Real-world legitimate emails — not synthetic or generated
 - Large volume — 500,000+ emails available
 - Publicly available — hosted by Carnegie Mellon University (CMU)
@@ -142,6 +150,7 @@ The Enron Email Dataset is one of the most widely used datasets in email researc
 - CMU server confirmed accessible (HTTP Status 200 verified)
 
 **Plan:**
+
 > Download the dataset directly from CMU server, extract and parse individual email files, pull out subject and body text, label all records as legitimate (label = 0), and combine with our phishing data for the final dataset.
 
 ```python
@@ -165,16 +174,17 @@ Since the PhishStats API limits responses to 100 records per request, a custom c
 
 ### Crawler Features
 
-| Feature | Description |
-|---------|-------------|
-| **Auto Save** | Saves data to CSV every 10 pages — no data loss even if interrupted |
-| **Checkpoint System** | Saves the last completed page number — allows full resume after crash |
-| **Rate Limit Handling** | Detects HTTP 429 errors and waits 60 seconds before retrying |
-| **Crash Recovery** | Saves all collected data immediately when any unexpected error occurs |
-| **Progress Tracking** | Prints live progress update every 10 pages |
-| **Resume Support** | On restart, automatically reads checkpoint and continues from last page |
+| Feature                 | Description                                                             |
+| ----------------------- | ----------------------------------------------------------------------- |
+| **Auto Save**           | Saves data to CSV every 10 pages — no data loss even if interrupted     |
+| **Checkpoint System**   | Saves the last completed page number — allows full resume after crash   |
+| **Rate Limit Handling** | Detects HTTP 429 errors and waits 60 seconds before retrying            |
+| **Crash Recovery**      | Saves all collected data immediately when any unexpected error occurs   |
+| **Progress Tracking**   | Prints live progress update every 10 pages                              |
+| **Resume Support**      | On restart, automatically reads checkpoint and continues from last page |
 
 ### Crawler Progress Output
+
 ```
 Crawling PhishStats — 19,000 records...
 Estimated time: ~10 minutes
@@ -193,25 +203,25 @@ Crawl Complete!
 
 Raw data collected from APIs and crawlers is never perfect. It contains missing values, empty records, duplicate entries, and inconsistent formatting. The following cleaning steps were applied to ensure the dataset is ready for NLP processing:
 
-| Step | Action | Reason |
-|------|--------|--------|
-| **Rename Columns** | `Email Text` → `body`, `Email Type` → `label` | Standardize column names across all sources |
-| **Label Encoding** | `Phishing Email` → `1`, `Safe Email` → `0` | Convert text labels to numeric for ML model |
-| **Drop Nulls** | Remove rows where `body` is null | Empty emails have no text features for NLP |
-| **Drop Empty** | Remove rows where `body` is blank or whitespace only | Whitespace-only text is useless for analysis |
-| **Drop Duplicates** | Remove duplicate `body` entries | Duplicate data biases the model training |
-| **Strip Whitespace** | Remove leading and trailing spaces from all text | Ensures clean text input for NLP preprocessing |
-| **Fix Labels** | Keep only rows where label is exactly 0 or 1 | Remove any inconsistent or corrupted label values |
-| **Reset Index** | Reset DataFrame index after all cleaning steps | Ensures clean sequential indexing for the model |
+| Step                 | Action                                               | Reason                                            |
+| -------------------- | ---------------------------------------------------- | ------------------------------------------------- |
+| **Rename Columns**   | `Email Text` → `body`, `Email Type` → `label`        | Standardize column names across all sources       |
+| **Label Encoding**   | `Phishing Email` → `1`, `Safe Email` → `0`           | Convert text labels to numeric for ML model       |
+| **Drop Nulls**       | Remove rows where `body` is null                     | Empty emails have no text features for NLP        |
+| **Drop Empty**       | Remove rows where `body` is blank or whitespace only | Whitespace-only text is useless for analysis      |
+| **Drop Duplicates**  | Remove duplicate `body` entries                      | Duplicate data biases the model training          |
+| **Strip Whitespace** | Remove leading and trailing spaces from all text     | Ensures clean text input for NLP preprocessing    |
+| **Fix Labels**       | Keep only rows where label is exactly 0 or 1         | Remove any inconsistent or corrupted label values |
+| **Reset Index**      | Reset DataFrame index after all cleaning steps       | Ensures clean sequential indexing for the model   |
 
 ### Final Column Structure
 
-| Column | Type | Description | Example |
-|--------|------|-------------|---------|
-| `label` | int | 1 = Phishing, 0 = Legitimate | `1` |
-| `subject` | str | Email subject line | `"Verify your account now"` |
-| `body` | str | Email body text or phishing URL | `"https://fake-login.com"` |
-| `source` | str | Where the data came from | `"phishstats_crawler"` |
+| Column    | Type | Description                     | Example                     |
+| --------- | ---- | ------------------------------- | --------------------------- |
+| `label`   | int  | 1 = Phishing, 0 = Legitimate    | `1`                         |
+| `subject` | str  | Email subject line              | `"Verify your account now"` |
+| `body`    | str  | Email body text or phishing URL | `"https://fake-login.com"`  |
+| `source`  | str  | Where the data came from        | `"phishstats_crawler"`      |
 
 ---
 
@@ -249,28 +259,28 @@ Enron CMU Dataset ⏳ ─────────────── 20,000 Legit
 
 ## 📊 Dataset Summary
 
-| Source | Type | Records | Label | Status |
-|--------|------|---------|-------|--------|
-| OpenPhish Live Feed | Phishing URLs | 300 | 1 | ✅ Done |
-| PhishStats Crawler | Phishing URLs | 19,000 | 1 | ✅ Done |
-| Enron CMU Dataset | Legitimate Emails | 20,000 | 0 | ⏳ In Progress |
-| **Total** | | **~39,300** | **0 & 1** | |
+| Source              | Type              | Records     | Label     | Status         |
+| ------------------- | ----------------- | ----------- | --------- | -------------- |
+| OpenPhish Live Feed | Phishing URLs     | 300         | 1         | ✅ Done        |
+| PhishStats Crawler  | Phishing URLs     | 19,000      | 1         | ✅ Done        |
+| Enron CMU Dataset   | Legitimate Emails | 20,000      | 0         | ⏳ In Progress |
+| **Total**           |                   | **~39,300** | **0 & 1** |                |
 
 ---
 
 ## 🛠️ Technologies Used
 
-| Technology | Purpose |
-|-----------|---------|
-| `Python` | Core programming language |
-| `Pandas` | Data manipulation and CSV handling |
-| `Requests` | API calls and HTTP requests |
-| `BeautifulSoup4` | HTML parsing for web crawling |
-| `Matplotlib` | Data visualization and graphs |
-| `Email` | Parsing raw Enron email files |
-| `Tarfile` | Extracting Enron .tar.gz archive |
-| `Time` | Rate limit handling between API requests |
-| `OS` | File and checkpoint management |
+| Technology       | Purpose                                  |
+| ---------------- | ---------------------------------------- |
+| `Python`         | Core programming language                |
+| `Pandas`         | Data manipulation and CSV handling       |
+| `Requests`       | API calls and HTTP requests              |
+| `BeautifulSoup4` | HTML parsing for web crawling            |
+| `Matplotlib`     | Data visualization and graphs            |
+| `Email`          | Parsing raw Enron email files            |
+| `Tarfile`        | Extracting Enron .tar.gz archive         |
+| `Time`           | Rate limit handling between API requests |
+| `OS`             | File and checkpoint management           |
 
 ---
 
@@ -294,11 +304,13 @@ Person1/
 ## ⚙️ How to Run
 
 ### 1. Install Requirements
+
 ```bash
 pip install pandas requests beautifulsoup4 matplotlib
 ```
 
 ### 2. Fetch OpenPhish Data
+
 ```python
 import requests
 response = requests.get("https://openphish.com/feed.txt")
@@ -307,11 +319,13 @@ print(f"Fetched: {len(phishing_urls)} phishing URLs")
 ```
 
 ### 3. Run PhishStats Crawler
+
 ```bash
 python crawler.py
 ```
 
 ### 4. Check Crawler Progress Anytime
+
 ```python
 import pandas as pd
 df = pd.read_csv("phishstats_crawled.csv")
@@ -324,28 +338,28 @@ print(f"Remaining     : {19000 - len(df)}")
 
 ## ✅ Task Checklist
 
-| Task | Status |
-|------|--------|
-| Collect phishing data from OpenPhish API | ✅ Done — 300 records |
-| Collect phishing data via PhishStats crawler | ✅ Done — 19,000 records |
-| Collect legitimate emails from Enron | ⏳ In Progress |
+| Task                                           | Status                    |
+| ---------------------------------------------- | ------------------------- |
+| Collect phishing data from OpenPhish API       | ✅ Done — 300 records     |
+| Collect phishing data via PhishStats crawler   | ✅ Done — 19,000 records  |
+| Collect legitimate emails from Enron           | ⏳ In Progress            |
 | Combine phishing + legitimate into one dataset | ⏳ After Enron collection |
-| Label data properly — Phishing=1, Legitimate=0 | ✅ Done |
-| Handle missing and inconsistent entries | ✅ Done |
-| Store dataset in structured CSV format | ✅ Done |
-| Visualize dataset distribution | ✅ Done |
-| Hand off final dataset to Person 2 | ⏳ After Enron collection |
+| Label data properly — Phishing=1, Legitimate=0 | ✅ Done                   |
+| Handle missing and inconsistent entries        | ✅ Done                   |
+| Store dataset in structured CSV format         | ✅ Done                   |
+| Visualize dataset distribution                 | ✅ Done                   |
+| Hand off final dataset to Person 2             | ⏳ After Enron collection |
 
 ---
 
 ## 🤝 Team Collaboration
 
-| Person | Role | Gets From Me |
-|--------|------|-------------|
-| **Person 1 — Harshit Ekka** | Data Engineer | — |
-| **Person 2** | NLP Preprocessing | `phishing_dataset_final.csv` |
-| **Person 3** | Model Developer | Preprocessed features from Person 2 |
-| **Person 4** | Evaluation & Visualization | Trained model from Person 3 |
+| Person                      | Role                       | Gets From Me                        |
+| --------------------------- | -------------------------- | ----------------------------------- |
+| **Person 1 — Harshit Ekka** | Data Engineer              | —                                   |
+| **Person 2**                | NLP Preprocessing          | `phishing_dataset_final.csv`        |
+| **Person 3**                | Model Developer            | Preprocessed features from Person 2 |
+| **Person 4**                | Evaluation & Visualization | Trained model from Person 3         |
 
 ---
 
