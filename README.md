@@ -14,6 +14,22 @@ This project detects and classifies phishing emails using NLP techniques.
 - [Contributing](CONTRIBUTING.md): Guidelines on how to clone, setup, and work with git branches.
 - [Team Roles](docs/TEAM_ROLES.md): Breakdown of the four main contributor roles and how the team should collaborate.
 
+## Getting the Model and Dataset
+
+Because the trained BERT model (~438 MB) and the full dataset are too large to host on GitHub, you have two options to obtain them to work on the project:
+
+### Option 1: Download from Google Drive (Recommended for Testing)
+If you only want to test the model or run the evaluation scripts without spending 1.5 hours training it yourself:
+1. Download the `bert_model_export.zip` and `Phishing_Email.csv` files from the team's shared Google Drive link: `[Insert Google Drive Link Here]`
+2. Extract the model zip file directly into the `models/bert/` directory of your cloned repository.
+3. Place the `Phishing_Email.csv` dataset directly into the `data/external/` directory.
+
+### Option 2: Train the Model Yourself (Recommended for Experimentation)
+If you want to train the model from scratch or tune its hyperparameters:
+1. Place the `Phishing_Email.csv` dataset into the `data/external/` directory.
+2. We highly recommend running the training on Google Colab (using a free T4 GPU) which takes ~1.5 hours. You can paste the contents of `src/models/train_bert.py` into a Colab notebook.
+3. Once training completes, download the exported model zip and extract it into your local `models/bert/` folder.
+
 ## Testing and Evaluating the BERT Model
 
 We have implemented an advanced deep learning approach using HuggingFace's BERT architecture. You can easily test and evaluate the model using our provided scripts.
