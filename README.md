@@ -20,7 +20,7 @@ Because the trained BERT model (~438 MB) and the full dataset are too large to h
 
 ### Option 1: Download from Google Drive (Recommended for Testing)
 If you only want to test the model or run the evaluation scripts without spending 1.5 hours training it yourself:
-1. Download the `bert_model_export.zip` and `Phishing_Email.csv` files from the team's shared Google Drive link: `[Insert Google Drive Link Here]`
+1. Download the `bert_model_export.zip` and `Phishing_Email.csv` files from the team's shared Google Drive folder: [Project Data & Models (Google Drive)](https://drive.google.com/drive/folders/1yknt9TJawHzMeJrKEk2_lU_CbjakdrQY?usp=sharing)
 2. Extract the model zip file directly into the `models/bert/` directory of your cloned repository.
 3. Place the `Phishing_Email.csv` dataset directly into the `data/external/` directory.
 
