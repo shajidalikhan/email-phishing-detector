@@ -36,8 +36,9 @@ class PhishingDataset(torch.utils.data.Dataset):
 def main(args):
     # Determine the project root to ensure relative paths work regardless of execution directory
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-    data_path = os.path.join(project_root, 'data', 'external', 'Phishing_Email.csv')
-    model_save_path = os.path.join(project_root, 'models', 'bert')
+    
+    data_path = args.data_path if args.data_path else os.path.join(project_root, 'data', 'external', 'Phishing_Email.csv')
+    model_save_path = args.output_dir if args.output_dir else os.path.join(project_root, 'models', 'bert')
     
     print(f"Loading data from {data_path}...")
     try:
@@ -134,6 +135,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train a BERT model on the phishing dataset.")
+    parser.add_argument('--data_path', type=str, default=None, help="Path to the Phishing_Email.csv dataset.")
+    parser.add_argument('--output_dir', type=str, default=None, help="Directory to save the trained model.")
     parser.add_argument('--subset', type=int, default=0, help="Number of samples to use for testing. 0 means use all data.")
     parser.add_argument('--epochs', type=int, default=3, help="Number of training epochs.")
     parser.add_argument('--batch_size', type=int, default=16, help="Training batch size per device.")
