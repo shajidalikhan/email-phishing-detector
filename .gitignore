@@ -48,6 +48,7 @@ models/*.pt
 models/*.pth
 models/*.keras
 *.safetensors
+*.bin
 checkpoints/
 
 # Logs and Databases
