@@ -2,7 +2,7 @@
 
 ## Person 1 — Data Engineer
 
-**Author:** Harshit Ekka
+**Author:** Harshit Ekka  
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-green)
