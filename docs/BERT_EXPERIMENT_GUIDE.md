@@ -1,4 +1,4 @@
-# BERT Experiment Guide (Shajid)
+# BERT Experiment Guide
 
 Welcome to your advanced modeling branch! Here, you will experiment with building a Deep Learning model using BERT to see if it outperforms the Scikit-Learn baseline models.
 
