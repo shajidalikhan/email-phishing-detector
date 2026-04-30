@@ -43,6 +43,8 @@ data/external/*
 
 # Project specific Models and Checkpoints
 models/*.pkl
+!models/label_encoder.pkl
+!models/vectorizer.pkl
 models/*.h5
 models/*.pt
 models/*.pth
