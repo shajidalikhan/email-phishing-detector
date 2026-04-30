@@ -6,3 +6,5 @@ notebook
 pytest
 streamlit
 python-dotenv
+numpy
+joblib
