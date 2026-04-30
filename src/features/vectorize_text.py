@@ -47,13 +47,15 @@ def vectorize_data(input_csv, vectorizer_path, matrix_path):
 if __name__ == "__main__":
     # Define paths
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    input_csv = os.path.join(base_dir, 'data', 'features_final.csv')
+    processed_dir = os.path.join(base_dir, 'data', 'processed')
+    input_csv = os.path.join(processed_dir, 'features_final.csv')
     
     models_dir = os.path.join(base_dir, 'models')
     os.makedirs(models_dir, exist_ok=True)
+    os.makedirs(processed_dir, exist_ok=True)
     
     vectorizer_path = os.path.join(models_dir, 'vectorizer.pkl')
-    matrix_path = os.path.join(models_dir, 'X_tfidf_matrix.npy')
+    matrix_path = os.path.join(processed_dir, 'X_tfidf_matrix.npy')
     
     if os.path.exists(input_csv):
         vectorize_data(input_csv, vectorizer_path, matrix_path)

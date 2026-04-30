@@ -101,7 +101,12 @@ if __name__ == "__main__":
     # Define paths
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     input_csv = os.path.join(base_dir, 'data', 'phishing_dataset_final.csv')
-    output_csv = os.path.join(base_dir, 'data', 'features_final.csv')
+    
+    # Ensure processed directory exists
+    processed_dir = os.path.join(base_dir, 'data', 'processed')
+    os.makedirs(processed_dir, exist_ok=True)
+    
+    output_csv = os.path.join(processed_dir, 'features_final.csv')
     
     # 1. Run Preprocessing
     if os.path.exists(input_csv):
@@ -113,14 +118,15 @@ if __name__ == "__main__":
     # 2. Run Vectorization
     models_dir = os.path.join(base_dir, 'models')
     os.makedirs(models_dir, exist_ok=True)
+    
     vectorizer_path = os.path.join(models_dir, 'vectorizer.pkl')
-    matrix_path = os.path.join(models_dir, 'X_tfidf_matrix.npy')
+    matrix_path = os.path.join(processed_dir, 'X_tfidf_matrix.npy')
     
     vectorize_data(output_csv, vectorizer_path, matrix_path)
     
     # 3. Run Combination
-    output_x_path = os.path.join(models_dir, 'X_final.npy')
-    output_y_path = os.path.join(models_dir, 'y.npy')
+    output_x_path = os.path.join(processed_dir, 'X_final.npy')
+    output_y_path = os.path.join(processed_dir, 'y.npy')
     encoder_path = os.path.join(models_dir, 'label_encoder.pkl')
     
     combine_features(matrix_path, output_csv, output_x_path, output_y_path, encoder_path)

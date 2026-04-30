@@ -64,12 +64,13 @@ def combine_features(tfidf_path, features_csv_path, output_x_path, output_y_path
 
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    processed_dir = os.path.join(base_dir, 'data', 'processed')
     
-    tfidf_path = os.path.join(base_dir, 'models', 'X_tfidf_matrix.npy')
-    features_csv_path = os.path.join(base_dir, 'data', 'features_final.csv')
+    tfidf_path = os.path.join(processed_dir, 'X_tfidf_matrix.npy')
+    features_csv_path = os.path.join(processed_dir, 'features_final.csv')
     
-    output_x_path = os.path.join(base_dir, 'models', 'X_final.npy')
-    output_y_path = os.path.join(base_dir, 'models', 'y.npy')
+    output_x_path = os.path.join(processed_dir, 'X_final.npy')
+    output_y_path = os.path.join(processed_dir, 'y.npy')
     encoder_path = os.path.join(base_dir, 'models', 'label_encoder.pkl')
     
     if os.path.exists(tfidf_path) and os.path.exists(features_csv_path):
