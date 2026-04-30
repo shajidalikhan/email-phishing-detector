@@ -14,6 +14,8 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.features.extract_meta import get_url_count, get_text_length, get_special_char_ratio, get_keyword_flags
+from src.features.vectorize_text import vectorize_data
+from src.features.combine_features import combine_features
 
 # Download necessary NLTK data
 def download_nltk_resources():
@@ -93,7 +95,7 @@ def build_feature_set(input_path, output_path):
     
     print(f"Saving processed features to {output_path}...")
     df.to_csv(output_path, index=False)
-    print("Done!")
+    print("Preprocessing Done!")
 
 if __name__ == "__main__":
     # Define paths
@@ -101,7 +103,26 @@ if __name__ == "__main__":
     input_csv = os.path.join(base_dir, 'data', 'phishing_dataset_final.csv')
     output_csv = os.path.join(base_dir, 'data', 'features_final.csv')
     
+    # 1. Run Preprocessing
     if os.path.exists(input_csv):
         build_feature_set(input_csv, output_csv)
     else:
         print(f"Input file not found at {input_csv}")
+        sys.exit(1)
+        
+    # 2. Run Vectorization
+    models_dir = os.path.join(base_dir, 'models')
+    os.makedirs(models_dir, exist_ok=True)
+    vectorizer_path = os.path.join(models_dir, 'vectorizer.pkl')
+    matrix_path = os.path.join(models_dir, 'X_tfidf_matrix.npy')
+    
+    vectorize_data(output_csv, vectorizer_path, matrix_path)
+    
+    # 3. Run Combination
+    output_x_path = os.path.join(models_dir, 'X_final.npy')
+    output_y_path = os.path.join(models_dir, 'y.npy')
+    encoder_path = os.path.join(models_dir, 'label_encoder.pkl')
+    
+    combine_features(matrix_path, output_csv, output_x_path, output_y_path, encoder_path)
+    
+    print("Full pipeline completed!")
