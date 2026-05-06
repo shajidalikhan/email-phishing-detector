@@ -46,12 +46,23 @@ Because the trained BERT model (~438 MB) and the full dataset are too large to h
 
 ## 4. How to Use the Project
 
-We provide three distinct ways to interact with the models depending on your needs.
+We provide several distinct ways to interact with the models depending on your needs.
 
-### Method A: The Web Dashboard (Streamlit)
-The easiest and most powerful way to test the models is through our interactive Web Dashboard. It runs both models concurrently and extracts visual Threat Indicators.
+### Method A: Using Docker (Recommended)
+The fastest and most reliable way to run the Web Dashboard without worrying about Python versions or dependency conflicts is by using Docker.
 
-1. Ensure your virtual environment is activated and dependencies are installed.
+1. Ensure Docker Desktop is installed and running on your system.
+2. Build and run the container:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Open your browser to `http://localhost:8501`.
+4. To stop the application, run `docker compose down`.
+
+### Method B: The Web Dashboard (Local Streamlit)
+If you prefer not to use Docker, you can run the interactive Web Dashboard locally. It runs both models concurrently and extracts visual Threat Indicators.
+
+1. Ensure your virtual environment is activated and dependencies are installed (`pip install -r requirements.txt`).
 2. Run the Streamlit app:
    ```bash
    streamlit run app/app.py
@@ -59,7 +70,7 @@ The easiest and most powerful way to test the models is through our interactive 
 3. Open your browser to `http://localhost:8501`.
 4. You can either **Paste Text** directly or **Upload an .eml File** to automatically parse attachments and body text!
 
-### Method B: Interactive CLI Tester
+### Method C: Interactive CLI Tester
 If you prefer the terminal, you can run an interactive loop to test strings of text directly against the models.
 
 **For BERT:**
@@ -71,7 +82,7 @@ python src/models/test_bert.py
 python src/models/predict.py
 ```
 
-### Method C: Batch Evaluation Pipeline
+### Method D: Batch Evaluation Pipeline
 To evaluate the models on the full test dataset and generate professional Markdown reports (like the ones in the `docs/` folder):
 
 ```bash
