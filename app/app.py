@@ -94,6 +94,21 @@ def load_sklearn_model():
         
     try:
         model = joblib.load(model_path)
+        
+        # Compatibility Fix: Handle sklearn version mismatches for LogisticRegression
+        # This occurs when models saved in older versions are loaded in newer ones (1.2+)
+        target_model = None
+        if hasattr(model, 'named_steps') and 'model' in model.named_steps:
+            target_model = model.named_steps['model']
+        elif hasattr(model, 'predict_proba'):
+            target_model = model
+
+        if target_model and 'LogisticRegression' in str(type(target_model)):
+            if not hasattr(target_model, 'multi_class'):
+                target_model.multi_class = 'auto'
+            if not hasattr(target_model, 'solver'):
+                target_model.solver = 'lbfgs'
+                
         return model
     except Exception as e:
         st.error(f"Failed to load ML model: {e}")
