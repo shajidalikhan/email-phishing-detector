@@ -234,29 +234,35 @@ def get_top_phishing_words(text, pipeline):
 
 # --- PDF GENERATION ---
 def create_pdf_report(result, confidence, text, keywords, threat_level):
+    # FPDF 1.x only natively supports latin-1. We must replace unsupported unicode characters
+    text = str(text).encode('latin-1', 'replace').decode('latin-1')
+    result = str(result).encode('latin-1', 'replace').decode('latin-1')
+    threat_level = str(threat_level).encode('latin-1', 'replace').decode('latin-1')
+    keywords = [str(k).encode('latin-1', 'replace').decode('latin-1') for k in keywords]
+
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", 'B', 16)
-    pdf.cell(200, 10, txt="PhishGuard AI - Forensic Analysis Report", ln=True, align='C')
+    pdf.cell(200, 10, "PhishGuard AI - Forensic Analysis Report", ln=True, align='C')
     pdf.set_font("Arial", size=12)
     pdf.ln(10)
-    pdf.cell(200, 10, txt=f"Timestamp: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True)
-    pdf.cell(200, 10, txt=f"Detection Result: {result}", ln=True)
-    pdf.cell(200, 10, txt=f"Confidence Score: {confidence:.2f}%", ln=True)
-    pdf.cell(200, 10, txt=f"Threat Severity: {threat_level}", ln=True)
+    pdf.cell(200, 10, f"Timestamp: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True)
+    pdf.cell(200, 10, f"Detection Result: {result}", ln=True)
+    pdf.cell(200, 10, f"Confidence Score: {confidence:.2f}%", ln=True)
+    pdf.cell(200, 10, f"Threat Severity: {threat_level}", ln=True)
     pdf.ln(5)
     pdf.set_font("Arial", 'B', 12)
-    pdf.cell(200, 10, txt="Extracted Suspicious Keywords:", ln=True)
+    pdf.cell(200, 10, "Extracted Suspicious Keywords:", ln=True)
     pdf.set_font("Arial", size=10)
-    pdf.multi_cell(0, 10, txt=", ".join(keywords) if keywords else "None detected")
+    pdf.multi_cell(0, 10, ", ".join(keywords) if keywords else "None detected")
     pdf.ln(5)
     pdf.set_font("Arial", 'B', 12)
-    pdf.cell(200, 10, txt="Email Content Snippet:", ln=True)
+    pdf.cell(200, 10, "Email Content Snippet:", ln=True)
     pdf.set_font("Arial", size=10)
-    pdf.multi_cell(0, 10, txt=text[:500] + "...")
+    pdf.multi_cell(0, 10, text[:500] + "...")
     pdf.ln(10)
     pdf.set_font("Arial", 'I', 10)
-    pdf.cell(200, 10, txt="Recommendation: Do not click any links or provide credentials if flagged as Phishing.", ln=True)
+    pdf.cell(200, 10, "Recommendation: Do not click any links or provide credentials if flagged as Phishing.", ln=True)
     return pdf.output(dest='S').encode('latin-1')
 
 # --- INITIALIZE STATE ---
