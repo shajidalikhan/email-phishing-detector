@@ -17,7 +17,6 @@ __pycache__/
 .pytest_cache/
 
 # Project specific
-data/
 notebooks/
 reports/
 docs/
