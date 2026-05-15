@@ -29,10 +29,10 @@ ehthumbs.db
 Thumbs.db
 
 # Project Data and Models (Avoid pushing large files)
-data/
-models/
-!data/**/.gitkeep
-!models/**/.gitkeep
+/data/
+/models/
+!/data/**/.gitkeep
+!/models/**/.gitkeep
 
 # Specific large file types
 *.csv
