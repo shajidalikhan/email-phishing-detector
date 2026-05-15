@@ -28,43 +28,29 @@ ENV/
 ehthumbs.db
 Thumbs.db
 
-# Project specific Data (Crucial for ML/NLP to avoid pushing large files)
-# We ignore the contents but can keep the folders if a .gitkeep is used
-data/raw/*
-data/processed/*
-data/external/*
+# Project Data and Models (Avoid pushing large files)
+data/
+models/
 !data/**/.gitkeep
+!models/**/.gitkeep
+
+# Specific large file types
 *.csv
-*.tsv
-*.xlsx
-*.pdf
-*.json
-*.jsonl
-
-# Project specific Models and Checkpoints
-models/*.pkl
-!models/label_encoder.pkl
-!models/vectorizer.pkl
-models/*.h5
-models/*.pt
-models/*.pth
-models/*.keras
-models/bert/*
-!models/bert/.gitkeep
-*.safetensors
+*.npz
+*.npy
+*.pkl
+*.h5
+*.keras
+*.pt
+*.pth
 *.bin
-checkpoints/
+*.safetensors
 
-# Logs and Databases
+# Logs
 logs/
 *.log
-*.sqlite
-*.sqlite3
 
 # Secrets and Configurations
 .env
 .env.local
 .env.secret
-# Large Files and Directories
-models/bert/
-data/external/
