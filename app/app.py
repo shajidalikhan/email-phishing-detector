@@ -19,7 +19,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
     
-from src.features.extract_meta import get_url_count, get_keyword_flags, get_special_char_ratio
+from src.phishing.features.extract_meta import get_url_count, get_keyword_flags, get_special_char_ratio
 
 # Suppress warnings
 warnings.filterwarnings("ignore")
@@ -167,8 +167,8 @@ st.markdown("""
 # --- LOAD MODELS ---
 @st.cache_resource(show_spinner="Loading AI Models...")
 def load_all_models():
-    model_path = os.path.join(project_root, 'models', 'bert')
-    sklearn_path = os.path.join(project_root, 'models', 'phishing_model.pkl')
+    model_path = os.path.join(project_root, 'models', 'phishing', 'bert')
+    sklearn_path = os.path.join(project_root, 'models', 'phishing', 'phishing_model.pkl')
     
     tokenizer = BertTokenizer.from_pretrained(model_path)
     bert_model = BertForSequenceClassification.from_pretrained(model_path)
@@ -180,7 +180,7 @@ def load_all_models():
 # --- DATA PROCESSING ---
 @st.cache_data
 def load_stats_data():
-    csv_path = os.path.join(project_root, 'data', 'external', 'Phishing_Email.csv')
+    csv_path = os.path.join(project_root, 'data', 'phishing', 'external', 'Phishing_Email.csv')
     df = pd.read_csv(csv_path)
     total = len(df)
     phishing = len(df[df['Email Type'] == 'Phishing Email'])
