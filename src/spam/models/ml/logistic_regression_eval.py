@@ -1,6 +1,57 @@
-# Logistic Regression Evaluation Script
-from sklearn.metrics import classification_report, accuracy_score
+import os
+import sys
+import joblib
+import scipy.sparse
+import numpy as np
 
-def evaluate_logistic_regression(y_test, y_pred):
-    print("Accuracy:", accuracy_score(y_test, y_pred))
-    print("Classification Report:\n", classification_report(y_test, y_pred))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, "../../../../"))
+
+# Ensure the evaluate_utils directory is in sys.path if it isn't
+sys.path.append(os.path.join(project_root, "src", "spam", "models"))
+from evaluate_utils import save_evaluation_report
+
+def main():
+    processed_dir = os.path.join(project_root, "data", "spam", "processed")
+    models_dir = os.path.join(project_root, "models", "spam", "ml")
+    docs_dir = os.path.join(project_root, "docs", "spam", "model", "ml")
+    
+    test_features_path = os.path.join(processed_dir, "X_test_lr.npz")
+    test_labels_path = os.path.join(processed_dir, "y_test_lr.npy")
+    model_path = os.path.join(models_dir, "logistic_regression.pkl")
+    
+    print("Loading test data and model...")
+    X_test = scipy.sparse.load_npz(test_features_path)
+    y_test = np.load(test_labels_path)
+    model = joblib.load(model_path)
+    
+    print("Generating predictions...")
+    y_pred = model.predict(X_test)
+    
+    # Information for report
+    hyperparams = model.get_params()
+    
+    # Calculate training set size roughly (we know it's an 80-20 split)
+    test_size = len(y_test)
+    train_size = int(test_size / 0.2 * 0.8)
+    
+    split_details = {
+        "Split Strategy": "80-20 Stratified Split (random_state=42)",
+        "Training Samples": train_size,
+        "Testing Samples": test_size,
+        "Total Dataset Size": train_size + test_size
+    }
+    
+    print("Evaluating and saving report...")
+    save_evaluation_report(
+        model_name="Logistic Regression",
+        y_true=y_test,
+        y_pred=y_pred,
+        hyperparams=hyperparams,
+        split_details=split_details,
+        output_dir=docs_dir,
+        file_name="logistic_regression_report.md"
+    )
+
+if __name__ == "__main__":
+    main()
